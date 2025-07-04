@@ -1,4 +1,4 @@
-// Game elements
+
 const promptEl = document.getElementById('prompt');
 const inputEl = document.getElementById('input');
 const playerCar = document.getElementById('playerCar');
@@ -28,7 +28,7 @@ const finalTime = document.getElementById('finalTime');
 const finalRank = document.getElementById('finalRank');
 const rankPosition = document.getElementById('rankPosition');
 
-// Game data
+
 const paragraphs = [
     "The quick brown fox jumps over the lazy dog while typing fast improves your coding skills dramatically.",
     "Programming is the process of creating instructions that tell a computer how to perform tasks efficiently.",
@@ -42,7 +42,7 @@ const paragraphs = [
     "Typing speed is measured in words per minute, with a word standardized as five characters."
 ];
 
-// Game state
+
 let gameMode = 'race'; // 'race' or 'timed'
 let gameActive = false;
 let gameTime = 60;
@@ -61,7 +61,7 @@ let elapsedTime = 0;
 let finishedCars = [false, false, false, false]; // [player, ferrari, porsche, lambo]
 let finishTimes = [0, 0, 0, 0]; // Finish times for each car
 
-// Initialize game
+
 function initGame() {
     resetGame();
     generateParagraph();
@@ -69,7 +69,7 @@ function initGame() {
     setupEventListeners();
 }
 
-// Setup event listeners
+
 function setupEventListeners() {
     startBtn.addEventListener('click', startGame);
     restartBtn.addEventListener('click', resetGame);
@@ -94,14 +94,14 @@ function generateParagraph() {
     renderPrompt();
 }
 
-// Load next paragraph
+
 function loadNextParagraph() {
     currentParagraphIndex = (currentParagraphIndex + 1) % paragraphs.length;
     currentText = paragraphs[currentParagraphIndex];
     renderPrompt();
 }
 
-// Render the prompt with proper styling
+
 function renderPrompt() {
     promptEl.innerHTML = "";
     currentText.split('').forEach((char, index) => {
@@ -113,7 +113,7 @@ function renderPrompt() {
     });
 }
 
-// Position cars at start line
+
 function positionCars() {
     playerCar.style.left = '0px';
     aiCars.forEach((car, index) => {
@@ -126,7 +126,7 @@ function positionCars() {
     finishTimes = [0, 0, 0, 0];
 }
 
-// Start the game
+
 function startGame() {
     if (gameActive) return;
     
@@ -142,7 +142,7 @@ function startGame() {
     elapsedTime = 0;
     resultsModal.style.display = 'none';
     
-    // Start timer based on mode
+    
     if (gameMode === 'timed') {
         timeLeft = gameTime;
         timerDisplay.textContent = `${timeLeft}s`;
@@ -159,7 +159,6 @@ function startGame() {
     startAICars();
 }
 
-// Update the timer
 function updateTimer() {
     const currentTime = Date.now();
     elapsedTime = (currentTime - startTime) / 1000;
@@ -190,7 +189,7 @@ function updateTimer() {
         `${elapsedTime.toFixed(2)}s`;
 }
 
-// Start AI cars movement
+
 function startAICars() {
     aiIntervals = aiSpeeds.map((speed, index) => {
         return setInterval(() => {
@@ -199,7 +198,7 @@ function startAICars() {
                 const variation = (Math.random() * 0.08) - 0.04;
                 aiPositions[index] += speed + variation;
                 
-                // Check if AI car has finished
+                
                 if (aiPositions[index] >= 95) {
                     aiPositions[index] = 95;
                     finishedCars[index + 1] = true;
@@ -216,14 +215,14 @@ function startAICars() {
     });
 }
 
-// Handle user input
+
 function handleInput() {
     if (!gameActive) startGame();
     
     const typed = inputEl.value;
     totalChars = typed.length;
     
-    // Update character styling
+
     let correctCount = 0;
     for (let i = 0; i < currentText.length; i++) {
         const charEl = document.getElementById(`char${i}`);
@@ -238,7 +237,7 @@ function handleInput() {
             charEl.className = 'char';
         }
         
-        // Add active class to current character
+        
         if (i === typed.length) {
             charEl.classList.add('active');
         } else {
@@ -248,7 +247,7 @@ function handleInput() {
     
     correctChars = correctCount;
     
-    // Check if player has finished
+    
     if (gameMode === 'race' && correctCount === currentText.length && !finishedCars[0]) {
         finishedCars[0] = true;
         finishTimes[0] = elapsedTime;
@@ -257,25 +256,25 @@ function handleInput() {
         finishGame();
     }
     
-    // Update player position based on accuracy
+    
     const progress = correctCount / currentText.length;
     playerPosition = progress * 95; // 95% to account for car width
     playerCar.style.left = `${playerPosition}%`;
     
-    // Update progress
+    
     progressStat.textContent = `${Math.round(progress * 100)}%`;
     
     // Update stats
     updateStats();
     
-    // For timed mode, load next paragraph when current one is completed
+    
     if (gameMode === 'timed' && correctCount === currentText.length) {
         inputEl.value = "";
         loadNextParagraph();
     }
 }
 
-// Update game stats
+
 function updateStats() {
     // Calculate WPM
     const elapsedMinutes = elapsedTime / 60;
@@ -283,19 +282,19 @@ function updateStats() {
     const wpm = elapsedMinutes > 0 ? Math.floor(words / elapsedMinutes) : 0;
     wpmStat.textContent = wpm;
     
-    // Calculate accuracy
+    
     const accuracy = totalChars > 0 ? Math.floor((correctChars / totalChars) * 100) : 100;
     accuracyStat.textContent = `${accuracy}%`;
     
-    // Update position ranking
+
     const positions = [playerPosition, ...aiPositions];
     const sortedPositions = [...positions].sort((a, b) => b - a);
     const rank = positions.indexOf(playerPosition) + 1;
     positionIndicator.textContent = `${rank}${getOrdinalSuffix(rank)}`;
 }
 
-// Get ordinal suffix (st, nd, rd, th)
-function getOrdinalSuffix(number) {
+
+function getOrdinalSuffix(number) 
     if (number > 3 && number < 21) return 'th';
     switch (number % 10) {
         case 1: return 'st';
@@ -305,7 +304,7 @@ function getOrdinalSuffix(number) {
     }
 }
 
-// Finish the game
+
 function finishGame() {
     gameActive = false;
     inputEl.disabled = true;
@@ -315,20 +314,20 @@ function finishGame() {
     startBtn.textContent = "Start Race";
     startBtn.disabled = false;
     
-    // Final stats update
+
     updateStats();
     
-    // Show results modal
+    
     showResults();
 }
 
-// Show race results
+
 function showResults() {
     const wpm = parseInt(wpmStat.textContent);
     const accuracy = accuracyStat.textContent;
     const time = gameMode === 'timed' ? `${gameTime}s` : `${elapsedTime.toFixed(2)}s`;
     
-    // Compute actual rank based on finish times
+    
     const positions = [
         {id: 0, position: playerPosition, time: finishTimes[0], finished: finishedCars[0]},
         {id: 1, position: aiPositions[0], time: finishTimes[1], finished: finishedCars[1]},
@@ -336,7 +335,7 @@ function showResults() {
         {id: 3, position: aiPositions[2], time: finishTimes[3], finished: finishedCars[3]}
     ];
     
-    // Filter out cars that didn't finish and sort by time
+    
     const finishedPositions = positions.filter(car => car.finished);
     finishedPositions.sort((a, b) => a.time - b.time);
     
@@ -344,7 +343,6 @@ function showResults() {
     const playerRank = finishedPositions.findIndex(car => car.id === 0) + 1;
     const rankStr = playerRank > 0 ? `${playerRank}${getOrdinalSuffix(playerRank)}` : "DNF";
     
-    // Update winner message based on rank
     if (playerRank === 1) {
         winnerEl.innerHTML = `You Won! 🏆 <br>1st Place`;
         winnerEl.style.color = "#FFD700"; // gold
@@ -359,10 +357,10 @@ function showResults() {
         winnerEl.style.color = "#70a1ff";
     }
 
-    // Update rank display
+  
     rankPosition.textContent = rankStr;
     
-    // Add special medal for 1st place
+  
     const medal = document.querySelector('.rank-medal');
     if (playerRank === 1) {
         medal.innerHTML = '<i class="fas fa-trophy"></i>';
@@ -383,11 +381,11 @@ function showResults() {
     finalTime.textContent = time;
     finalRank.textContent = rankStr;
     
-    // Show modal
+
     resultsModal.style.display = 'flex';
 }
 
-// Reset the game
+
 function resetGame() {
     gameActive = false;
     inputEl.disabled = true;
@@ -415,7 +413,7 @@ function resetGame() {
     generateParagraph();
 }
 
-// Select game mode
+
 function selectMode(mode) {
     gameMode = mode;
     
@@ -425,7 +423,7 @@ function selectMode(mode) {
     });
     event.target.classList.add('active');
     
-    // Show/hide time selector
+
     if (mode === 'timed') {
         timeSelector.style.display = 'flex';
     } else {
@@ -435,7 +433,7 @@ function selectMode(mode) {
     resetGame();
 }
 
-// Set time for timed mode
+
 function setTime(seconds) {
     gameTime = seconds;
     
@@ -448,5 +446,5 @@ function setTime(seconds) {
     resetGame();
 }
 
-// Initialize the game
+
 window.addEventListener('DOMContentLoaded', initGame);
